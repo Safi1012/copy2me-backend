@@ -1,0 +1,21 @@
+{
+  "name": "copy2me-backend",
+  "version": "1.0.0",
+  "description": "Copy2me backend to enable push notifications",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Safi1012/copy2me-backend.git"
+  },
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon --inspect index.js"
+  },
+  "author": "Filipe Santos Correa",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.14.1"
+  },
+  "devDependencies": {
+    "nodemon": "^1.11.0"
+  }
+}
