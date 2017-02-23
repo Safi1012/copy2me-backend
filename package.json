@@ -13,7 +13,8 @@
   "author": "Filipe Santos Correa",
   "license": "MIT",
   "dependencies": {
-    "express": "^4.14.1"
+    "express": "^4.14.1",
+    "firebase-admin": "^4.1.1"
   },
   "devDependencies": {
     "nodemon": "^1.11.0"
