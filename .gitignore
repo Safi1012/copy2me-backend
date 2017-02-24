@@ -73,3 +73,6 @@ dll/
 
 # Report
 /report
+
+# Firebase accountKey
+firebase_serviceAccountKey.json
