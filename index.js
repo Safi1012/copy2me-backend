@@ -1,7 +1,7 @@
 var express = require('express')
-var app = express()
 var request = require('request');
 var firebase = require('firebase-admin');
+var app = express()
 var API_KEY = 'AAAA6R8joXo:APA91bG7y0eZNmFItOlKu47cpnclWV50NSylKPttKBIle1Mt57rM2RUSLH7AMHTqdRgKAChF_1UhSDs2623es5P-5_y9BwlbQVZtwVuVibYqOa7hY_mqob4jlIyMA13ew5BkDMVNkLSkOjSkR3P4i4ANCMOHBRnGLA';
 
 app.listen(5000, () => {
@@ -10,15 +10,15 @@ app.listen(5000, () => {
 
 app.get('/', (req, res) => {
   res.send('Hello Arne!')
-  listenToChanges();
 })
+
 
 firebase.initializeApp({
   credential: firebase.credential.cert('./firebase_serviceAccountKey.json'),
   databaseURL: 'https://clipme-32a80.firebaseio.com'
 });
 
-// listenToChanges();
+listenToChanges();
 
 function listenToChanges() {
   let links = firebase.database().ref().child('links');
@@ -29,42 +29,38 @@ function listenToChanges() {
 }
 
 function listenToNewHistoryItems(uid) {
-  console.log('links/' + uid + '/history');
-
   firebase.database().ref().child('links/' + uid + '/history/').on('child_added', item => {
     let notificationSent = item.val()['notification-sent'];
-    let excludeDeviceAuthFromPush = item.val()['push-auth'];
+    let excludedDeviceAuth = item.val()['push-auth'];
 
     if (!notificationSent) {
-      sentAuthDataToFCM(uid, excludeDeviceAuthFromPush)
+      sentAuthDataToFCM(uid, excludedDeviceAuth, item.key)
     }
   });
 }
 
-function sentAuthDataToFCM(uid, excludeDeviceAuthFromPush) {
-  console.log(uid + excludeDeviceAuthFromPush);
-
-
+function sentAuthDataToFCM(uid, excludedDeviceAuth, historyKey) {
   firebase.database().ref().child('links/' + uid + '/push-subscriptions/').once('value', subscriptions => {
-    console.log(subscriptions);
-    console.log(subscriptions.val());
 
-    for (var key in subscriptions.val()) {
-      let auth = subscriptions.val()[key].auth;
-      let endpoint = subscriptions.val()[key].endpoint;
-      let p256dh = subscriptions.val()[key].p256dh;
+    if (subscriptions.val().length >= 2) {
+      for (var key in subscriptions.val()) {
+        let auth = subscriptions.val()[key].auth;
+        let endpoint = subscriptions.val()[key].endpoint;
+        let p256dh = subscriptions.val()[key].p256dh;
 
-      // sent request to FCM
-      sendNotificationToUser(auth, endpoint, p256dh);
-
-      // set sentNotification to true -> after sending
+        if (auth !== excludedDeviceAuth) {
+          sendRequestToFCM(auth, endpoint, p256dh).then(() => {
+            updateSentNotifcation(uid, historyKey, excludedDeviceAuth);
+          });
+        }
+      }
+    } else {
+      updateSentNotifcation(uid, historyKey, excludedDeviceAuth);
     }
   });
 }
 
-function sendNotificationToUser(auth, endpoint, p256dh) {
-  console.log(API_KEY);
-  message = 'Test';
+function sendRequestToFCM(auth, endpoint, p256dh) {
   let registrationID = endpoint;
 
   if (endpoint.startsWith('https://android.googleapis.com/gcm/send')) {
@@ -72,22 +68,40 @@ function sendNotificationToUser(auth, endpoint, p256dh) {
     registrationID = endpointParts[endpointParts.length - 1];
   }
 
-  request({
-    url: 'https://android.googleapis.com/gcm/send',
-    method: 'POST',
-    headers: {
-      'Content-Type': ' application/json',
-      'Authorization': 'key=' + API_KEY,
-    },
-    body: JSON.stringify({
-      'registration_ids': [registrationID]
-    })
-  }, function(error, response, body) {
-    if (error) {
-      console.error(error);
-    } else if (response.statusCode >= 400) {
-      console.error('HTTP Error: ' + response.statusCode + ' - ' + response.statusMessage);
-    }
+  return new Promise((resolve, reject) => {
+    request({
+      url: 'https://android.googleapis.com/gcm/send',
+      method: 'POST',
+      headers: {
+        'Content-Type': ' application/json',
+        'Authorization': 'key=' + API_KEY,
+      },
+      body: JSON.stringify({
+        'registration_ids': [registrationID]
+      })
+    }, function(error, response, body) {
+      if (error) {
+        console.error(error);
+        reject();
+      } else if (response.statusCode >= 400) {
+        console.error('HTTP Error: ' + response.statusCode + ' - ' + response.statusMessage);
+        reject();
+      } else {
+        resolve();
+      }
+    });
   });
+}
 
+function updateSentNotifcation(uid, historyKey, excludedDeviceAuth) {
+  firebase.database().ref('links/' + uid + '/history/' + historyKey)
+    .update({
+      'notification-sent': true
+    })
+    .then(() => {
+      console.log('Success');
+    })
+    .catch(error => {
+      console.log('error: ' + error);
+    });
 }
