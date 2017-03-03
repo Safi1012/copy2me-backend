@@ -1,7 +1,7 @@
 {
   "name": "copy2me-backend",
   "version": "1.0.0",
-  "description": "Copy2me backend to enable push notifications",
+  "description": "Enables push notifications for Copy2me.",
   "repository": {
     "type": "git",
     "url": "https://github.com/Safi1012/copy2me-backend.git"
@@ -13,7 +13,6 @@
   "author": "Filipe Santos Correa",
   "license": "MIT",
   "dependencies": {
-    "express": "^4.14.1",
     "firebase-admin": "^4.1.1",
     "request": "^2.79.0"
   },
