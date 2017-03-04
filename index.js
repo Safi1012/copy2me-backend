@@ -32,7 +32,7 @@ function listenToNewHistoryItems(uid) {
 function sentAuthDataToFCM(uid, excludedDeviceAuth, historyKey) {
   firebase.database().ref().child('links/' + uid + '/push-subscriptions/').once('value', subscriptions => {
 
-    if (subscriptions.val().length >= 2) {
+    if (subscriptions.val() && subscriptions.val().length >= 2) {
       for (var key in subscriptions.val()) {
         let auth = subscriptions.val()[key].auth;
         let endpoint = subscriptions.val()[key].endpoint;
