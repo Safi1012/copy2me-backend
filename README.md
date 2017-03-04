@@ -3,7 +3,7 @@
 This Node application enables push notifications for the <a href="https://github.com/Safi1012/copy2me" target="_blank">Copy2me</a> application. 
 
 
-## Technology Stack
+#### **Technology Stack**
 * firebase-admin
 * request
 
@@ -12,7 +12,8 @@ This Node application enables push notifications for the <a href="https://github
 
 # Getting started
 
-The following steps explain how Copy2me can be self hosted.
+The following steps describe what step have to be done to host a Copy2me on your own.
+
 
 
 <br/>
@@ -30,10 +31,8 @@ Next, you have to create a new Firebase project. A great <a href="https://fireba
 
 #### **SetUp**
 
-After creating an own Firebase project you have to add your Firebase configuration, which can be found under the Firebase project settings (dashboard).
+The next step is to replace the existing Firebase configuration (*src/app/services/firebase/firebase.service.ts*) of Copy2me and to replace it with your newly generated  config, which can be found in your Firebase project settings (dashboard).
 
-
-Now you have to navigate to the current Firebase configuration of Copy2me under *src/app/services/firebase/firebase.service.ts* and replace it with your newly generated config.
 
 
 
@@ -45,7 +44,7 @@ Now you have to navigate to the current Firebase configuration of Copy2me under 
 The moment you replaced the old Firebase configuration of Copy2me with your own, you are ready to deploy Copy2me to the Firebase Hosting service.
 
 
-Please make sure that you already created the Copy2me production bundle by executing the following command in the Copy2me project root folder.
+Please make sure that you first generate the Copy2me production bundle by executing the following command in the Copy2me project root folder.
 
 ```bash
 $ npm run build:aot
