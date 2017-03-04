@@ -1,3 +1,5 @@
+#!/usr/bin/env nodejs
+
 var request = require('request');
 var firebase = require('firebase-admin');
 
@@ -32,7 +34,7 @@ function listenToNewHistoryItems(uid) {
 function sentAuthDataToFCM(uid, excludedDeviceAuth, historyKey) {
   firebase.database().ref().child('links/' + uid + '/push-subscriptions/').once('value', subscriptions => {
 
-    if (subscriptions.val() && Object.keys(subscriptions.val()).length >= 2) {
+    if (subscriptions.val() && Object.keys(subscriptions.val()).length >= 1) {
       for (var key in subscriptions.val()) {
         let auth = subscriptions.val()[key].auth;
         let endpoint = subscriptions.val()[key].endpoint;
