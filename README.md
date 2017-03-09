@@ -3,7 +3,10 @@
 This Node application enables push notifications for the <a href="https://github.com/Safi1012/copy2me" target="_blank">Copy2me</a> application. 
 
 
-#### **Technology Stack**
+<br/>
+
+
+# Technology Stack
 * firebase-admin
 * request
 
