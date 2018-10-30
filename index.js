@@ -3,7 +3,7 @@
 var request = require('request');
 var firebase = require('firebase-admin');
 
-var API_KEY = 'AAAA6R8joXo:APA91bG7y0eZNmFItOlKu47cpnclWV50NSylKPttKBIle1Mt57rM2RUSLH7AMHTqdRgKAChF_1UhSDs2623es5P-5_y9BwlbQVZtwVuVibYqOa7hY_mqob4jlIyMA13ew5BkDMVNkLSkOjSkR3P4i4ANCMOHBRnGLA';
+var API_KEY = 'YOUR_API_KEY';
 
 firebase.initializeApp({
   credential: firebase.credential.cert(__dirname + '/firebase_serviceAccountKey.json'),
